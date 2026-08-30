@@ -44,5 +44,5 @@ jobs:
 
       - name: Deploy
         run: |
-          sudo tar -xzf linux-server-lab.tar.gz -C /opt/linux-server-lab
-          chmod +x /opt/linux-server-lab/*.sh
+          sudo -n tar -xzf linux-server-lab.tar.gz -C /opt/linux-server-lab
+          sudo -n chmod +x /opt/linux-server-lab/*.sh
