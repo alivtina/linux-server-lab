@@ -16,3 +16,6 @@ jobs:
         uses: ludeeus/action-shellcheck@2.0.0
         with:
           scandir: './scripts'
+
+      - name: Run tests
+        run: ./tests/test-health-check.sh
