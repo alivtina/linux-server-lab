@@ -31,3 +31,14 @@ jobs:
         with:
           name: linux-server-lab
           path: linux-server-lab.tar.gz
+
+  self-hosted-test:
+    runs-on: [self-hosted, Linux, X64, ubuntu-devops]
+
+    steps:
+      - name: Test self-hosted runner
+        run: |
+          echo "Running on self-hosted runner"
+          echo "Hostname: $(hostname)"
+          echo "Kernel: $(uname -r)"
+          cat /etc/os-release
