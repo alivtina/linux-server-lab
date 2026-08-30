@@ -32,13 +32,17 @@ jobs:
           name: linux-server-lab
           path: linux-server-lab.tar.gz
 
-  self-hosted-test:
+  deploy:
+    needs: shellcheck
     runs-on: [self-hosted, Linux, X64, ubuntu-devops]
 
     steps:
-      - name: Test self-hosted runner
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-server-lab
+
+      - name: Deploy
         run: |
-          echo "Running on self-hosted runner"
-          echo "Hostname: $(hostname)"
-          echo "Kernel: $(uname -r)"
-          cat /etc/os-release
+          sudo tar -xzf linux-server-lab.tar.gz -C /opt/linux-server-lab
+          chmod +x /opt/linux-server-lab/*.sh
