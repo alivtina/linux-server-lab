@@ -19,3 +19,15 @@ jobs:
 
       - name: Run tests
         run: ./tests/test-health-check.sh
+
+      - name: Build artifact
+        run: |
+          mkdir -p build
+          cp scripts/*.sh build/
+          tar -czf linux-server-lab.tar.gz -C build .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-server-lab
+          path: linux-server-lab.tar.gz
