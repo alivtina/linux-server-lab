@@ -1,0 +1,17 @@
+services:
+  web:
+    image: nginx
+    ports:
+      - "8080:80"
+
+  app:
+    image: alpine
+    command: sleep infinity
+    environment:
+      APP_ENV: development
+      APP_PORT: "8080"
+    volumes:
+      - app-data:/data
+
+volumes:
+  app-data:

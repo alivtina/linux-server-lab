@@ -1,0 +1,11 @@
+FROM ubuntu:26.04
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends iproute2 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY scripts/system-info.sh /usr/local/bin/system-info.sh
+
+RUN chmod +x /usr/local/bin/system-info.sh
+
+CMD ["/usr/local/bin/system-info.sh"]

@@ -1,0 +1,7 @@
+FROM alpine
+
+RUN echo "Installing dependencies..."
+RUN echo "Application setup..."
+RUN echo "Hello v2" > /message.txt
+
+CMD ["cat", "/message.txt"]
