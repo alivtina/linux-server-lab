@@ -46,3 +46,9 @@ jobs:
         run: |
           sudo -n tar -xzf linux-server-lab.tar.gz -C /opt/linux-server-lab
           sudo -n chmod +x /opt/linux-server-lab/*.sh
+          
+      - name: Verify deployment
+        run: |
+          test -x /opt/linux-server-lab/health-check.sh
+          test -x /opt/linux-server-lab/system-info.sh
+          echo "Deployment verified"
