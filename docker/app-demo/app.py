@@ -6,7 +6,10 @@ APP_ENV = os.getenv("APP_ENV", "development")
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        message = f"Hello from Docker! Environment: {APP_ENV}\n"
+        if self.path == "/health":
+            message = "OK\n"
+        else:
+            message = f"Hello from Docker! Environment: {APP_ENV}\n"
 
         self.send_response(200)
         self.send_header("Content-Type", "text/plain")

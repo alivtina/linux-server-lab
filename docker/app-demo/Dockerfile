@@ -8,4 +8,7 @@ RUN adduser -D appuser
 
 USER appuser
 
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+    CMD wget -q -O - http://127.0.0.1:8000/health
+
 CMD ["python", "/app.py"]
