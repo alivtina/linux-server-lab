@@ -1,32 +1,84 @@
 # Linux Server Lab
 
-## Overview
+Hands-on Linux and DevOps lab for building practical system administration, scripting, containerization, networking, and automation skills.
 
-This project is a hands-on Linux server lab. I am building and configuring a Linux server step by step to practice practical system administration and DevOps skills.
+The repository documents exercises and small projects built while progressing from Linux administration toward DevOps engineering.
+
+## Projects
+
+### Docker Practice
+
+Hands-on Docker exercises covering:
+
+- Docker images and containers
+- Dockerfiles and image layers
+- Build cache and build context
+- `.dockerignore`
+- Container networking and DNS
+- Port publishing
+- Bind mounts and named volumes
+- Docker Compose
+- Environment variables
+- Container healthchecks
+- Non-root containers
+
+**Examples:**
+
+- [Docker practice](docker/README.md)
+- [Compose demo](docker/compose-demo/)
+- [Dockerfile examples](docker/dockerfile-demo/)
+- [Containerized Python application](docker/app-demo/)
+
+### Linux Administration
+
+Practical exercises covering:
+
+- Linux filesystem
+- Users and groups
+- Permissions
+- Processes and services
+- SSH
+- Networking
+- Package management
+- System monitoring
+- Bash scripting
+- Troubleshooting
+
+### Automation & CI
+
+The repository also contains Bash scripts and GitHub Actions workflows used to automate checks and validate the project.
+
+## Skills Demonstrated
+
+| Area | Technologies / Skills |
+|---|---|
+| Operating systems | Linux, Ubuntu Server |
+| Shell | Bash, command line |
+| Version control | Git, GitHub |
+| Containers | Docker, Docker Compose |
+| Networking | TCP/IP fundamentals, container networking, DNS |
+| Automation | Bash, GitHub Actions |
+| Virtualization | QEMU/KVM, libvirt |
 
 ## Environment
 
-* **Linux distribution:** Ubuntu Server
-* **Environment:** Virtual machine
-* **Virtualization:** QEMU/KVM, libvirt
-* **Host system:** Arch Linux
+- **Host:** Arch Linux
+- **Server:** Ubuntu Server
+- **Virtualization:** QEMU/KVM + libvirt
+- **Tools:** Git, Docker, Bash
 
-## Goals
+## Repository Structure
 
-The main goal of this project is to gain practical experience with Linux server administration and DevOps. I want to understand how servers work, how to configure and manage them securely, and how to administer them using the command line.
-
-## Topics
-
-* Linux command line
-* Filesystem and permissions
-* Users and groups
-* SSH
-* Networking
-* Processes and services
-* Package management
-* Bash scripting
-* System monitoring
-* Server security
-* Git and version control
-* Basic DevOps practices
-
+```text
+.
+├── docker/
+│   ├── app-demo/
+│   ├── compose-demo/
+│   ├── dockerfile-demo/
+│   ├── website/
+│   └── README.md
+├── docs/
+├── scripts/
+├── tests/
+├── troubleshooting/
+└── README.md

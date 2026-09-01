@@ -1,28 +1,114 @@
 # Docker Practice
 
-This directory contains hands-on Docker exercises completed as part of the Linux Server Lab.
+Hands-on Docker lab built as part of the Linux Server Lab.
 
-## Topics Covered
+The examples demonstrate how to build, run, configure, network, and troubleshoot containers using Docker and Docker Compose.
+
+## What This Lab Demonstrates
 
 * Docker images and containers
-* Container lifecycle
-* `docker run`, `docker start`, and `docker exec`
-* Container networking
-* Docker bridge networks
-* Docker DNS and service discovery
-* Port publishing
-* Named volumes and persistent data
-* Bind mounts
-* Dockerfiles
-* Image layers and build cache
-* Build context and `.dockerignore`
+* Container lifecycle and `docker exec`
+* Dockerfiles and image layers
+* Build cache and build context
+* `.dockerignore`
 * `CMD` and `ENTRYPOINT`
-* Docker Compose
+* Container networking and Docker DNS
+* Port publishing
+* Bind mounts and named volumes
 * Environment variables
+* Container healthchecks
+* Running containers as a non-root user
+* Docker Compose
 
-## Docker Compose Demo
+## Projects
 
-The `compose-demo` directory contains a two-service Docker Compose environment.
+### 1. Containerized Python Application
+
+**Directory:** [`app-demo/`](app-demo/)
+
+A small Python HTTP application packaged into a Docker image.
+
+The application demonstrates:
+
+* Building a custom Docker image
+* Copying application code into an image
+* Publishing container ports
+* Environment variables
+* Running as a non-root user
+* Docker `HEALTHCHECK`
+* HTTP health endpoint
+
+#### Build
+
+```bash
+cd app-demo
+docker build -t app-demo .
+```
+
+#### Run
+
+```bash
+docker run -d \
+  --name app-demo \
+  -p 8080:8000 \
+  -e APP_ENV=production \
+  app-demo
+```
+
+#### Test
+
+```bash
+curl http://localhost:8080/
+```
+
+Expected:
+
+```text
+Hello from Docker! Environment: production
+```
+
+Healthcheck:
+
+```bash
+curl http://localhost:8080/health
+```
+
+Expected:
+
+```text
+OK
+```
+
+Check container health:
+
+```bash
+docker ps
+```
+
+The container should eventually show:
+
+```text
+(healthy)
+```
+
+Remove the container:
+
+```bash
+docker rm -f app-demo
+```
+
+---
+
+### 2. Docker Compose Demo
+
+**Directory:** [`compose-demo/`](compose-demo/)
+
+A two-service Docker Compose environment consisting of:
+
+* `web` — Nginx
+* `app` — Alpine Linux
+
+Both services are connected to the same Compose network.
 
 ```text
 Host
@@ -31,42 +117,38 @@ Host
   v
 web (nginx)
   |
-  | Docker internal network
+  | Docker Compose network
   | http://web
   v
-app (Alpine)
+app (alpine)
   |
   v
-named volume (/data)
+named volume
+/data
 ```
 
-The `web` service is accessible from the host through port `8080`.
+The example demonstrates:
 
-The `app` service can communicate with `web` using the Docker Compose service name:
+* Multiple containers managed with Compose
+* Service-to-service communication
+* Docker DNS / service discovery
+* Port publishing
+* Named volumes
+* Environment variables
+* Container lifecycle with Compose
 
-```text
-http://web
-```
+#### Start
 
-Docker's internal DNS resolves the service name to the container's current IP address.
-
-### Run the demo
+From the repository root:
 
 ```bash
-cd compose-demo
-docker compose up -d
+docker compose -f docker/compose-demo/compose.yaml up -d
 ```
 
-Check the running services:
+Check the services:
 
 ```bash
-docker compose ps
-```
-
-Test communication between the containers:
-
-```bash
-docker compose exec app wget -qO- http://web
+docker compose -f docker/compose-demo/compose.yaml ps
 ```
 
 Test access from the host:
@@ -75,48 +157,102 @@ Test access from the host:
 curl http://localhost:8080
 ```
 
-Stop and remove the containers:
+Test communication between containers:
 
 ```bash
-docker compose down
+docker compose -f docker/compose-demo/compose.yaml exec app wget -qO- http://web
 ```
 
-The named volume is preserved unless `-v` is used.
+Stop the services:
 
-## Dockerfile Examples
+```bash
+docker compose -f docker/compose-demo/compose.yaml down
+```
 
-The `dockerfile-demo` directory contains examples demonstrating:
+The named volume remains after `down` unless `-v` is used.
+
+---
+
+### 3. Dockerfile Examples
+
+**Directory:** [`dockerfile-demo/`](dockerfile-demo/)
+
+Small Dockerfiles used to practice individual Dockerfile instructions and image-building concepts.
+
+Examples include:
 
 * `FROM`
 * `RUN`
 * `COPY`
 * `CMD`
 * `ENTRYPOINT`
-* Docker image layers
-* Docker build cache
+* Image layers
+* Build cache
 * Build context
 
-One example packages the existing `system-info.sh` script into a Docker image.
+#### Example: package a shell script into an image
 
-Build it from the repository root:
+`Dockerfile.copy` packages the existing `system-info.sh` shell script from the repository into an Ubuntu-based image.
+
+Build from the repository root:
 
 ```bash
 docker build \
   -f docker/dockerfile-demo/Dockerfile.copy \
-  -t system-info-demo .
+  -t system-info-demo:v1 .
 ```
 
-Run it:
+Run:
 
 ```bash
-docker run --rm system-info-demo
+docker run --rm system-info-demo:v1
 ```
 
-## Website Bind Mount
+The container executes the system information script and displays information such as the hostname, kernel, memory, disk usage, IP address, and CPU count.
 
-The `website` directory contains a simple HTML file used to demonstrate Docker bind mounts.
+---
 
-A bind mount allows a container to access a file or directory directly from the host.
+### 4. Website Bind Mount
 
-Changes made to the mounted file on the host are immediately visible inside the container.
+**Directory:** [`website/`](website/)
 
+A minimal HTML page used to demonstrate Docker bind mounts.
+
+A bind mount maps a directory or file from the host into a container.
+
+This allows changes made to the mounted file on the host to be immediately visible inside the container without rebuilding the image.
+
+## Key Concepts Practiced
+
+| Concept               | Demonstrated in               |
+| --------------------- | ----------------------------- |
+| Images and containers | All examples                  |
+| Dockerfiles           | `dockerfile-demo`, `app-demo` |
+| Build cache           | `dockerfile-demo`             |
+| Build context         | `dockerfile-demo`             |
+| `.dockerignore`       | `app-demo`                    |
+| Port publishing       | `app-demo`, `compose-demo`    |
+| Container networking  | `compose-demo`                |
+| Docker DNS            | `compose-demo`                |
+| Named volumes         | `compose-demo`                |
+| Bind mounts           | `website`                     |
+| Environment variables | `app-demo`, `compose-demo`    |
+| Healthchecks          | `app-demo`                    |
+| Non-root containers   | `app-demo`                    |
+| Docker Compose        | `compose-demo`                |
+
+## Learning Outcome
+
+After completing these exercises, I can independently:
+
+* Build a Docker image from a Dockerfile
+* Run and manage containers
+* Publish container ports
+* Pass configuration through environment variables
+* Persist data with Docker volumes
+* Connect containers through Docker networks
+* Use Docker Compose to manage multiple services
+* Debug basic container networking problems
+* Add a container healthcheck
+* Run an application container as a non-root user
+* Inspect images, containers, networks, and volumes
