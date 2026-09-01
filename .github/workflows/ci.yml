@@ -46,9 +46,54 @@ jobs:
         run: |
           sudo -n tar -xzf linux-server-lab.tar.gz -C /opt/linux-server-lab
           sudo -n chmod +x /opt/linux-server-lab/*.sh
-          
+
       - name: Verify deployment
         run: |
           test -x /opt/linux-server-lab/health-check.sh
           test -x /opt/linux-server-lab/system-info.sh
           echo "Deployment verified"
+
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          cd docker/app-demo
+          docker build -t app-demo:ci .
+
+      - name: Run container
+        run: |
+          docker run -d \
+            --name app-demo-ci \
+            -p 8080:8000 \
+            app-demo:ci
+
+      - name: Wait for container health
+        run: |
+          for i in {1..10}; do
+            status=$(docker inspect -f '{{.State.Health.Status}}' app-demo-ci)
+            echo "Container health: $status"
+
+            if [ "$status" = "healthy" ]; then
+              exit 0
+            fi
+
+            sleep 3
+          done
+
+          docker inspect app-demo-ci
+          exit 1
+
+      - name: Test application
+        run: |
+          curl --fail http://localhost:8080/health
+          curl --fail http://localhost:8080/
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker rm -f app-demo-ci || true
