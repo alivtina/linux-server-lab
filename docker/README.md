@@ -97,6 +97,47 @@ Remove the container:
 docker rm -f app-demo
 ```
 
+#### Run with Docker Compose
+
+The application can also be started using Docker Compose.
+
+```bash
+docker compose -f docker/app-demo/compose.yaml up -d
+```
+
+Check the service:
+
+```bash
+docker compose -f docker/app-demo/compose.yaml ps
+```
+
+Test the application:
+
+```bash
+curl http://localhost:8080/
+```
+
+Test the health endpoint:
+
+```bash
+curl http://localhost:8080/health
+```
+
+Stop the application:
+
+```bash
+docker compose -f docker/app-demo/compose.yaml down
+```
+
+The Compose configuration demonstrates:
+
+* Building an image from a Dockerfile
+* Port publishing
+* Environment variable configuration
+* Container restart policy
+* Docker healthchecks
+* Managing the application lifecycle with Docker Compose
+
 ---
 
 ### 2. Docker Compose Demo
@@ -190,9 +231,9 @@ Examples include:
 * Build cache
 * Build context
 
-#### Example: package a shell script into an image
+#### Example: package a Bash script into an image
 
-`Dockerfile.copy` packages the existing `system-info.sh` shell script from the repository into an Ubuntu-based image.
+`Dockerfile.copy` packages the existing `system-info.sh` script from the repository into an Ubuntu-based image.
 
 Build from the repository root:
 
@@ -220,7 +261,7 @@ A minimal HTML page used to demonstrate Docker bind mounts.
 
 A bind mount maps a directory or file from the host into a container.
 
-This allows changes made to the mounted file on the host to be immediately visible inside the container without rebuilding the image.
+This allows changes made on the host to be immediately visible inside the container without rebuilding the image.
 
 ## Key Concepts Practiced
 
@@ -239,7 +280,7 @@ This allows changes made to the mounted file on the host to be immediately visib
 | Environment variables | `app-demo`, `compose-demo`    |
 | Healthchecks          | `app-demo`                    |
 | Non-root containers   | `app-demo`                    |
-| Docker Compose        | `compose-demo`                |
+| Docker Compose        | `app-demo`, `compose-demo`    |
 
 ## Learning Outcome
 
@@ -251,8 +292,10 @@ After completing these exercises, I can independently:
 * Pass configuration through environment variables
 * Persist data with Docker volumes
 * Connect containers through Docker networks
-* Use Docker Compose to manage multiple services
+* Use Docker Compose to manage services
 * Debug basic container networking problems
-* Add a container healthcheck
+* Add and verify container healthchecks
 * Run an application container as a non-root user
 * Inspect images, containers, networks, and volumes
+* Test containerized applications from the host and between containers
+* Automate Docker image builds and application tests with GitHub Actions
