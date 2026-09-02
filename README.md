@@ -70,15 +70,15 @@ The repository also contains Bash scripts and GitHub Actions workflows used to a
 ## Repository Structure
 
 ```text
-.
+linux-server-lab/
+├── .github/
+│   └── workflows/
 ├── docker/
-│   ├── app-demo/
-│   ├── compose-demo/
-│   ├── dockerfile-demo/
-│   ├── website/
-│   └── README.md
-├── docs/
+├── python/
+│   └── system-health/
 ├── scripts/
 ├── tests/
 ├── troubleshooting/
+├── .dockerignore
+├── .gitignore
 └── README.md
