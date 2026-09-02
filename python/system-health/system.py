@@ -1,7 +1,16 @@
 import sys
 import json
 import os
+import logging
 import psutil
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    filename="system-health.log"
+)
+
+logger = logging.getLogger(__name__)
 
 
 def get_hostname():
@@ -33,6 +42,8 @@ def check_usage(percent, threshold):
 def main():
     threshold = 80
 
+    logger.info("System health check started")
+
     hostname = get_hostname()
     username = get_username()
     cpu_cores = get_cpu_cores()
@@ -56,6 +67,32 @@ def main():
     memory_status = check_usage(system["memory_percent"], threshold)
     disk_status = check_usage(system["disk_percent"], threshold)
 
+    if memory_status == "WARNING":
+        logger.warning(
+            "Memory usage: %.1f%% [%s]",
+            system["memory_percent"],
+            memory_status
+        )
+    else:
+        logger.info(
+            "Memory usage: %.1f%% [%s]",
+            system["memory_percent"],
+            memory_status
+        )
+
+    if disk_status == "WARNING":
+        logger.warning(
+            "Disk usage: %.1f%% [%s]",
+            system["disk_percent"],
+            disk_status
+        )
+    else:
+        logger.info(
+            "Disk usage: %.1f%% [%s]",
+            system["disk_percent"],
+            disk_status
+        )
+
     system["memory_status"] = memory_status
     system["disk_status"] = disk_status
 
@@ -72,6 +109,7 @@ def main():
         print(f"Disk usage: {system['disk_percent']}% [{system['disk_status']}]")
         print(f"Disk free: {system['disk_free_gb']:.2f} GB")
 
+    logger.info("System health check completed")
 
 if __name__ == "__main__":
     main()
