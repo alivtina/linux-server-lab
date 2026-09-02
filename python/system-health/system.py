@@ -1,9 +1,15 @@
+import sys
+import json
 import os
 import psutil
 
 
 def get_hostname():
     return os.uname().nodename
+
+
+def get_username():
+    return os.getlogin()
 
 
 def get_cpu_cores():
@@ -18,52 +24,52 @@ def get_disk_usage():
     return psutil.disk_usage("/")
 
 
-def get_system_info():
-    memory = get_memory()
-    disk = get_disk_usage()
-
-    system = {
-        "hostname": get_hostname(),
-        "cpu_cores": get_cpu_cores(),
-        "memory_percent": memory.percent,
-        "disk_percent": disk.percent,
-        "disk_free_gb": disk.free / (1024 ** 3),
-    }
-
-    return system
-
-
 def check_usage(percent, threshold):
     if percent > threshold:
         return "WARNING"
-    else:
-        return "OK"
+    return "OK"
 
 
 def main():
     threshold = 80
 
-    system = get_system_info()
+    hostname = get_hostname()
+    username = get_username()
+    cpu_cores = get_cpu_cores()
 
-    results = {
-        "memory": check_usage(system["memory_percent"], threshold),
+    memory = get_memory()
+    memory_gb = memory.available / (1024 ** 3)
+
+    disk_usage = get_disk_usage()
+    disk_free_gb = disk_usage.free / (1024 ** 3)
+
+    system = {
+        "hostname": hostname,
+        "username": username,
+        "cpu_cores": cpu_cores,
+        "memory_percent": memory.percent,
+        "memory_available_gb": memory_gb,
+        "disk_percent": disk_usage.percent,
+        "disk_free_gb": disk_free_gb,
     }
 
-    try:
-        results["disk"] = check_usage(system["disk_percent"], threshold)
-    except KeyError:
-        print("Disk information unavailable")
+    memory_status = check_usage(system["memory_percent"], threshold)
+    disk_status = check_usage(system["disk_percent"], threshold)
 
-    print("System Health")
-    print("-------------")
-    print(f"Hostname: {system['hostname']}")
-    print(f"CPU cores: {system['cpu_cores']}")
-    print(f"Memory: {system['memory_percent']}% [{results['memory']}]")
+    system["memory_status"] = memory_status
+    system["disk_status"] = disk_status
 
-    disk_status = results.get("disk")
-
-    if disk_status:
-        print(f"Disk: {system['disk_percent']}% [{disk_status}]")
+    if "--json" in sys.argv:
+        print(json.dumps(system, indent=4))
+    else:
+        print("System Health")
+        print("-------------")
+        print(f"Hostname: {system['hostname']}")
+        print(f"User: {system['username']}")
+        print(f"CPU cores: {system['cpu_cores']}")
+        print(f"Memory usage: {system['memory_percent']}% [{system['memory_status']}]")
+        print(f"Memory available: {system['memory_available_gb']:.2f} GB")
+        print(f"Disk usage: {system['disk_percent']}% [{system['disk_status']}]")
         print(f"Disk free: {system['disk_free_gb']:.2f} GB")
 
 
