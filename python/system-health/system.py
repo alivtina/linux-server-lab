@@ -3,6 +3,7 @@ import json
 import os
 import logging
 import psutil
+import getpass
 
 logging.basicConfig(
     level=logging.INFO,
@@ -18,7 +19,7 @@ def get_hostname():
 
 
 def get_username():
-    return os.getlogin()
+    return getpass.getuser()
 
 
 def get_cpu_cores():
