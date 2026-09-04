@@ -2,3 +2,8 @@
 __pycache__/
 *.pyc
 system-health.log
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
